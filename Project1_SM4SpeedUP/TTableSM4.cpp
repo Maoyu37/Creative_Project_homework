@@ -47,6 +47,68 @@ uint32_t CK[32] = {
     0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279
 };
 
+// Start of T-Table
+// 生成4个T表
+uint32_t T0[256], T1[256], T2[256], T3[256];
+
+uint32_t L(uint32_t x) {
+    return x ^ ((x << 2) | (x >> 30))
+             ^ ((x << 10) | (x >> 22))
+             ^ ((x << 18) | (x >> 14))
+             ^ ((x << 24) | (x >> 8));
+}
+
+// S盒查表
+uint8_t Sbox_sub(uint8_t x) {
+    return Sbox[x];
+}
+
+// 初始化T表
+void init_T_tables() {
+    for (int i = 0; i < 256; ++i) {
+        uint8_t b = Sbox[i];
+        uint32_t v = b;
+        T0[i] = L(v << 24);
+        T1[i] = L(v << 16);
+        T2[i] = L(v << 8);
+        T3[i] = L(v);
+    }
+}
+
+// T表优化的T函数
+inline uint32_t T_func_Ttable(uint32_t x) {
+    return T0[(x >> 24) & 0xFF]
+         ^ T1[(x >> 16) & 0xFF]
+         ^ T2[(x >> 8) & 0xFF]
+         ^ T3[x & 0xFF];
+}
+
+// 优化版一轮
+inline uint32_t SM4Round_Ttable(uint32_t x0, uint32_t x1, uint32_t x2, uint32_t x3, uint32_t rk) {
+    return x0 ^ T_func_Ttable(x1 ^ x2 ^ x3 ^ rk);
+}
+
+// 优化版加解密主流程
+void SM4Encrypt_Ttable(const uint8_t* input, uint8_t* output, const uint32_t rk[32]) {
+    uint32_t x[36];
+    // 输入转为4个32位字（大端序）
+    for (int i = 0; i < 4; ++i) {
+        x[i] = (input[4 * i] << 24) | (input[4 * i + 1] << 16) | (input[4 * i + 2] << 8) | input[4 * i + 3];
+    }
+    for (int i = 0; i < 32; ++i) {
+        x[i + 4] = SM4Round_Ttable(x[i], x[i + 1], x[i + 2], x[i + 3], rk[i]);
+    }
+    // 输出逆序
+    for (int i = 0; i < 4; ++i) {
+        uint32_t t = x[35 - i];
+        output[4 * i] = (t >> 24) & 0xFF;
+        output[4 * i + 1] = (t >> 16) & 0xFF;
+        output[4 * i + 2] = (t >> 8) & 0xFF;
+        output[4 * i + 3] = t & 0xFF;
+    }
+}
+// End of T-Table
+
 uint8_t* T_func(uint8_t* x) {
     static uint8_t result[4];
 
@@ -107,10 +169,10 @@ uint32_t T_Kgen(uint32_t K) {
 void RoundKeyGen(uint32_t rk[32], uint8_t key[16]) {
 	uint32_t K[36];
     uint32_t key_word[4];
-    key_word[0] = key[0] | key[1] | key[2] | key[3];
-	key_word[1] = key[4] | key[5] | key[6] | key[7];
-	key_word[2] = key[8] | key[9] | key[10] | key[11];
-	key_word[3] = key[12] | key[13] | key[14] | key[15];
+    key_word[0] = (key[0] << 24) | (key[1] << 16) | (key[2] << 8) | key[3];
+    key_word[1] = (key[4] << 24) | (key[5] << 16) | (key[6] << 8) | key[7];
+    key_word[2] = (key[8] << 24) | (key[9] << 16) | (key[10] << 8) | key[11];
+    key_word[3] = (key[12] << 24) | (key[13] << 16) | (key[14] << 8) | key[15];
 	for (int i = 0; i < 4; ++i) {
 		K[i] = key_word[i] ^ FK[i];
 	}
@@ -123,36 +185,40 @@ void RoundKeyGen(uint32_t rk[32], uint8_t key[16]) {
 }
 
 void SM4Encrypt(uint8_t* input, uint8_t* output, uint32_t rk[32]) {
-	uint8_t x[36][4];
-	for (int i = 0; i < 16; ++i) { // initial vector
-		x[0][i] = input[i];
-	}
-	for (int i = 0; i < 32; ++i) { // round func
+    uint8_t x[36][4];
+    // 修正：正确分组装载输入
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            x[i][j] = input[4 * i + j];
+        }
+    }
+    for (int i = 0; i < 32; ++i) {
         uint8_t* temp = SM4Round(x[i], x[i + 1], x[i + 2], x[i + 3], (uint8_t*)&rk[i]);
         x[i + 4][0] = temp[0];
-		x[i + 4][1] = temp[1];
-		x[i + 4][2] = temp[2];
-		x[i + 4][3] = temp[3];
-	}
-	// reverse
-	output[0] = x[35][0];
-	output[1] = x[35][1];
-	output[2] = x[35][2];
-	output[3] = x[35][3];
-	output[4] = x[34][0];
-	output[5] = x[34][1];
-	output[6] = x[34][2];
-	output[7] = x[34][3];
-	output[8] = x[33][0];
-	output[9] = x[33][1];
-	output[10] = x[33][2];
-	output[11] = x[33][3];
-	output[12] = x[32][0];
-	output[13] = x[32][1];
-	output[14] = x[32][2];
-	output[15] = x[32][3];
-	// End of the Encryption
+        x[i + 4][1] = temp[1];
+        x[i + 4][2] = temp[2];
+        x[i + 4][3] = temp[3];
+    }
+    // reverse
+    output[0] = x[35][0];
+    output[1] = x[35][1];
+    output[2] = x[35][2];
+    output[3] = x[35][3];
+    output[4] = x[34][0];
+    output[5] = x[34][1];
+    output[6] = x[34][2];
+    output[7] = x[34][3];
+    output[8] = x[33][0];
+    output[9] = x[33][1];
+    output[10] = x[33][2];
+    output[11] = x[33][3];
+    output[12] = x[32][0];
+    output[13] = x[32][1];
+    output[14] = x[32][2];
+    output[15] = x[32][3];
+    // End of the Encryption
 }
+
 
 // Benchmark Phase
 #include <chrono>
@@ -185,7 +251,7 @@ void benchmark_SM4() {
     uint8_t decrypted[BLOCK_SIZE];
 
     // 准备大缓冲区用于吞吐量测试
-    constexpr size_t LARGE_BUFFER_SIZE = 1024 * 1024; // 1MB
+    constexpr size_t LARGE_BUFFER_SIZE = 1024 * 1024 * 10; // 1MB
     uint8_t* large_plain = new uint8_t[LARGE_BUFFER_SIZE];
     uint8_t* large_cipher = new uint8_t[LARGE_BUFFER_SIZE];
     uint8_t* large_decrypted = new uint8_t[LARGE_BUFFER_SIZE];
@@ -276,30 +342,29 @@ void benchmark_SM4() {
 
 int main()
 {
-	uint32_t rk[32];
-	RoundKeyGen(rk, Key);
-	uint8_t output[16];
-	SM4Encrypt(Plaintext, output, rk);
-	std::cout << "SM4 Encryption Result: ";
-	for (int i = 0; i < 16; ++i) {
-		std::cout << std::hex << (int)output[i] << " ";
-	}
-	std::cout << std::endl;
-	// SM4 为Festiel结构，解密即为加密的逆过程
-	/// 将rk逆序
-	uint32_t rk2[32];
-	for (int i = 0; i < 32; ++i) {
-		rk2[i] = rk[31 - i];
-	}
-	uint8_t PLT[16];
-	SM4Encrypt(output, PLT, rk2);
-	std::cout << "SM4 Decryption Result: ";
-	for (int i = 0; i < 16; ++i) {
-		std::cout << std::hex << (int)PLT[i] << " ";
-	}
-	std::cout << std::endl;
+    init_T_tables();
+    uint32_t rk[32];
+    RoundKeyGen(rk, Key);
+    uint8_t output[16];
+    SM4Encrypt_Ttable(Plaintext, output, rk);
+    std::cout << "SM4 Encryption Result: ";
+    for (int i = 0; i < 16; ++i) {
+        std::cout << std::hex << (int)output[i] << " ";
+    }
+    std::cout << std::endl;
+    // SM4 为Festiel结构，解密即为加密的逆过程
+    uint32_t rk2[32];
+    for (int i = 0; i < 32; ++i) {
+        rk2[i] = rk[31 - i];
+    }
+    uint8_t PLT[16];
+    SM4Encrypt_Ttable(output, PLT, rk2);
+    std::cout << "SM4 Decryption Result: ";
+    for (int i = 0; i < 16; ++i) {
+        std::cout << std::hex << (int)PLT[i] << " ";
+    }
+    std::cout << std::endl;
     // 运行性能测试
     benchmark_SM4();
-	return 0;
+    return 0;
 }
-

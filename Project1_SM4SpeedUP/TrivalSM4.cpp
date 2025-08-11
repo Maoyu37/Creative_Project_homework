@@ -107,10 +107,10 @@ uint32_t T_Kgen(uint32_t K) {
 void RoundKeyGen(uint32_t rk[32], uint8_t key[16]) {
 	uint32_t K[36];
     uint32_t key_word[4];
-    key_word[0] = key[0] | key[1] | key[2] | key[3];
-	key_word[1] = key[4] | key[5] | key[6] | key[7];
-	key_word[2] = key[8] | key[9] | key[10] | key[11];
-	key_word[3] = key[12] | key[13] | key[14] | key[15];
+    key_word[0] = (key[0] << 24) | (key[1] << 16) | (key[2] << 8) | key[3];
+    key_word[1] = (key[4] << 24) | (key[5] << 16) | (key[6] << 8) | key[7];
+    key_word[2] = (key[8] << 24) | (key[9] << 16) | (key[10] << 8) | key[11];
+    key_word[3] = (key[12] << 24) | (key[13] << 16) | (key[14] << 8) | key[15];
 	for (int i = 0; i < 4; ++i) {
 		K[i] = key_word[i] ^ FK[i];
 	}
