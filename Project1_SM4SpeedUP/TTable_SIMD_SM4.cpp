@@ -1,9 +1,10 @@
-﻿#include <iostream>
+#include <iostream>
 #include<vector>
 #include<array>
 #include<cstddef>
 #include <cstdint>
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 // 防止编译器优化掉关键操作
 volatile uint8_t prevent_optimization;
@@ -109,42 +110,6 @@ void SM4Encrypt_Ttable(const uint8_t* input, uint8_t* output, const uint32_t rk[
 }
 // End of T-Table
 
-uint8_t* T_func(uint8_t* x) {
-    static uint8_t result[4];
-
-    // S盒代换
-    uint8_t b[4];
-    for (int i = 0; i < 4; ++i) {
-        b[i] = Sbox[x[i]];
-    }
-
-    // 将4字节组合成32位字（大端序）
-    uint32_t word = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
-
-    // 线性变换L: 循环左移并异或
-    uint32_t L = word
-        ^ ((word << 2) | (word >> 30))   // 循环左移2位
-        ^ ((word << 10) | (word >> 22))  // 循环左移10位
-        ^ ((word << 18) | (word >> 14))  // 循环左移18位
-        ^ ((word << 24) | (word >> 8));  // 循环左移24位
-
-    // 将32位结果拆分为4字节
-    result[0] = (L >> 24) & 0xFF;
-    result[1] = (L >> 16) & 0xFF;
-    result[2] = (L >> 8) & 0xFF;
-    result[3] = L & 0xFF;
-
-    return result;
-}
-
-uint8_t* SM4Round(uint8_t x1[4], uint8_t x2[4], uint8_t x3[4], uint8_t x4[4], uint8_t* rk) {
-	uint8_t result[4];
-	uint8_t temp[4];
-	xor4Bytes(temp, x2, x3, x4, rk);
-	xor2Bytes(result, x1, T_func(temp));
-	return result;
-}
-
 uint32_t T_Kgen(uint32_t K) {
 	static uint8_t A[4];
     static uint8_t B[4];
@@ -184,41 +149,45 @@ void RoundKeyGen(uint32_t rk[32], uint8_t key[16]) {
 	}
 }
 
-void SM4Encrypt(uint8_t* input, uint8_t* output, uint32_t rk[32]) {
-    uint8_t x[36][4];
-    // 修正：正确分组装载输入
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            x[i][j] = input[4 * i + j];
+// SIMD 优化：一次处理4个块
+void SM4Encrypt_Ttable_SIMD4(const uint8_t* input, uint8_t* output, const uint32_t rk[32], int blocks) {
+    // blocks 必须为4的倍数
+    for (int b = 0; b < blocks; b += 4) {
+        __m128i x[4][36];
+        // 加载4个块
+        for (int k = 0; k < 4; ++k) {
+            const uint8_t* in = input + (b + k) * 16;
+            uint32_t x0 = (in[0] << 24) | (in[1] << 16) | (in[2] << 8) | in[3];
+            uint32_t x1 = (in[4] << 24) | (in[5] << 16) | (in[6] << 8) | in[7];
+            uint32_t x2 = (in[8] << 24) | (in[9] << 16) | (in[10] << 8) | in[11];
+            uint32_t x3 = (in[12] << 24) | (in[13] << 16) | (in[14] << 8) | in[15];
+            x[k][0] = _mm_set_epi32(x0, x1, x2, x3);
+        }
+        // 32 轮
+        for (int i = 0; i < 32; ++i) {
+            for (int k = 0; k < 4; ++k) {
+                uint32_t x0 = _mm_extract_epi32(x[k][i], 3);
+                uint32_t x1 = _mm_extract_epi32(x[k][i], 2);
+                uint32_t x2 = _mm_extract_epi32(x[k][i], 1);
+                uint32_t x3 = _mm_extract_epi32(x[k][i], 0);
+                uint32_t t = SM4Round_Ttable(x0, x1, x2, x3, rk[i]);
+                x[k][i + 1] = _mm_set_epi32(x1, x2, x3, t);
+            }
+        }
+        // 输出
+        for (int k = 0; k < 4; ++k) {
+            uint32_t t0 = _mm_extract_epi32(x[k][32], 3);
+            uint32_t t1 = _mm_extract_epi32(x[k][32], 2);
+            uint32_t t2 = _mm_extract_epi32(x[k][32], 1);
+            uint32_t t3 = _mm_extract_epi32(x[k][32], 0);
+            uint8_t* out = output + (b + k) * 16;
+            out[0] = (t3 >> 24) & 0xFF; out[1] = (t3 >> 16) & 0xFF; out[2] = (t3 >> 8) & 0xFF; out[3] = t3 & 0xFF;
+            out[4] = (t2 >> 24) & 0xFF; out[5] = (t2 >> 16) & 0xFF; out[6] = (t2 >> 8) & 0xFF; out[7] = t2 & 0xFF;
+            out[8] = (t1 >> 24) & 0xFF; out[9] = (t1 >> 16) & 0xFF; out[10] = (t1 >> 8) & 0xFF; out[11] = t1 & 0xFF;
+            out[12] = (t0 >> 24) & 0xFF; out[13] = (t0 >> 16) & 0xFF; out[14] = (t0 >> 8) & 0xFF; out[15] = t0 & 0xFF;
         }
     }
-    for (int i = 0; i < 32; ++i) {
-        uint8_t* temp = SM4Round(x[i], x[i + 1], x[i + 2], x[i + 3], (uint8_t*)&rk[i]);
-        x[i + 4][0] = temp[0];
-        x[i + 4][1] = temp[1];
-        x[i + 4][2] = temp[2];
-        x[i + 4][3] = temp[3];
-    }
-    // reverse
-    output[0] = x[35][0];
-    output[1] = x[35][1];
-    output[2] = x[35][2];
-    output[3] = x[35][3];
-    output[4] = x[34][0];
-    output[5] = x[34][1];
-    output[6] = x[34][2];
-    output[7] = x[34][3];
-    output[8] = x[33][0];
-    output[9] = x[33][1];
-    output[10] = x[33][2];
-    output[11] = x[33][3];
-    output[12] = x[32][0];
-    output[13] = x[32][1];
-    output[14] = x[32][2];
-    output[15] = x[32][3];
-    // End of the Encryption
 }
-
 
 // Benchmark Phase
 #include <chrono>
@@ -295,20 +264,21 @@ void benchmark_SM4() {
     const int blocks = LARGE_BUFFER_SIZE / BLOCK_SIZE;
 
     start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < blocks; ++i) {
-        SM4Encrypt_Ttable(large_plain + i * BLOCK_SIZE,
-            large_cipher + i * BLOCK_SIZE, rk);
+    // SIMD 优化：每次处理4个块
+    for (int i = 0; i < blocks; i += 4) {
+        SM4Encrypt_Ttable_SIMD4(large_plain + i * BLOCK_SIZE,
+            large_cipher + i * BLOCK_SIZE, rk, 4);
     }
     end = std::chrono::high_resolution_clock::now();
 
     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     double encrypt_throughput = (LARGE_BUFFER_SIZE / (1024.0 * 1024.0)) / (duration / 1000000.0);
 
-    // 测试吞吐量 (1MB数据解密)
+        // 测试吞吐量 (1MB数据解密)
     start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < blocks; ++i) {
-        SM4Encrypt_Ttable(large_cipher + i * BLOCK_SIZE,
-            large_decrypted + i * BLOCK_SIZE, decrypt_rk);
+    for (int i = 0; i < blocks; i += 4) {
+        SM4Encrypt_Ttable_SIMD4(large_cipher + i * BLOCK_SIZE,
+            large_decrypted + i * BLOCK_SIZE, decrypt_rk, 4);
     }
     end = std::chrono::high_resolution_clock::now();
 
