@@ -4,6 +4,19 @@
 
 ## Project1 SM4的代码实现及加速尝试
 - TrivalSM4.cpp 文件包含了SM4的C++实现，以及一个简单的benchmark
+- TTableSM4.cpp 文件包含了上述实现的TTable加速版本，实现了约6倍性能提升
+- TTable_SIMD_SM4.cpp 文件利用smmintrin实现了SIMD向量化并行优化，进一步改善了性能
+- 实验截图见Project1文件夹
+
+## Project2 图片水印嵌入提取的算法优化
+该任务利用了开源脚本[BlindWatermark](https://github.com/fire-keeper/BlindWatermark)给出的基于离散小波变换的水印嵌入提取算法。
+我对该脚本组件进行了重新封装，形成了用于给图片添加水印的ImageWatermarkGen.py与从图片提取水印的ImageWatermarkVrfy.py。
+- ImageWatermarkVrfyneo.py 在上述代码的基础上解决了原算法在被旋转后水印失效的问题
+- readme.md中包含了对上述项目的黑白、彩色版本图片添加或删除复杂水印图像的效果测试，对旋转、对比度调整等常见图像变换做了鲁棒性检测
+- 对于进一步的抵抗裁剪、拼贴、平移、遮挡、噪点等攻击的表现，建议读者查阅[BlindWatermark给出的测试结果](https://github.com/fire-keeper/BlindWatermark/blob/master/readme.md)
+
+## Project3 Poseidon2哈希算法的circom实现
+
 
 ## 开源许可
 由于部分代码继承自其他项目，本项目采用GPL-3.0 license
