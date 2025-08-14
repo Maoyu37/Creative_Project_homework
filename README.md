@@ -16,6 +16,14 @@
 - 对于进一步的抵抗裁剪、拼贴、平移、遮挡、噪点等攻击的表现，建议读者查阅[BlindWatermark给出的测试结果](https://github.com/fire-keeper/BlindWatermark/blob/master/readme.md)
 
 ## Project3 Poseidon2哈希算法的circom实现
+本任务利用[circom2](https://github.com/iden3/circom)给出的平台编写实现了[Poseidon2](https://eprint.iacr.org/2023/323.pdf)哈希算法，并将其编译为了ZKP常用的R1CS形式文件。
+为了验证证明正确性，需要事先计算若干组Poseidon2的原像-哈希对，实验中采用了[HorizonLabs给出的开源Poseidon2实现](https://github.com/HorizenLabs/poseidon2/tree/main)预计算出若干原像-哈希对，见项目文件夹中的input.json
+- poseidon2.circom为本项目实现的Poseidon2电路
+- input.json为线路评估时的输入变量
+- test.py用于将开源Poseidon2实现的rust项目给出的大端序BIG_INT输出转换为十进制大整数
+
+## Project4 SM3的软件实现与优化
+- MySM3.cpp给出了SM3杂凑算法的C++实现，经过[国家密码管理局给出的测试样例](https://oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf)验证无误
 
 
 ## 开源许可
