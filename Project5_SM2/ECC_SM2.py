@@ -1,6 +1,5 @@
 from ecc.curve import PSM2 , Point , Curve
 import random
-import gmpy2
 
 # 一些参数设置
 ID_A = '1145141919810'  # 用户A的身份标识
