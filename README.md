@@ -12,7 +12,7 @@
 该任务利用了开源脚本[BlindWatermark](https://github.com/fire-keeper/BlindWatermark)给出的基于离散小波变换的水印嵌入提取算法。
 我对该脚本组件进行了重新封装，形成了用于给图片添加水印的ImageWatermarkGen.py与从图片提取水印的ImageWatermarkVrfy.py。
 - ImageWatermarkVrfyneo.py 在上述代码的基础上解决了原算法在被旋转后水印失效的问题
-- readme.md中包含了对上述项目的黑白、彩色版本图片添加或删除复杂水印图像的效果测试，对旋转、对比度调整等常见图像变换做了鲁棒性检测
+- [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project2_ImageWaterPrint/readme.md)中包含了对上述项目的黑白、彩色版本图片添加或删除复杂水印图像的效果测试，对旋转、对比度调整等常见图像变换做了鲁棒性检测
 - 对于进一步的抵抗裁剪、拼贴、平移、遮挡、噪点等攻击的表现，建议读者查阅[BlindWatermark给出的测试结果](https://github.com/fire-keeper/BlindWatermark/blob/master/readme.md)
 
 ## Project3 Poseidon2哈希算法的circom实现
@@ -25,7 +25,9 @@
 ## Project4 SM3的软件实现与优化
 - MySM3.cpp给出了SM3杂凑算法的C++实现，经过[国家密码管理局给出的测试样例](https://oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf)验证无误
 - uint32.cpp给出了基于类型优化、循环展开等的优化版本，思路与SM4类似。
-- readme.md给出了一个长度扩展攻击思路，LengthAttendAttack1.cpp实现了其中关键步骤的代码
+- [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/readme.md)给出了一个长度扩展攻击思路，LengthAttendAttack1.cpp实现了其中关键步骤的代码
+
+## Project5 SM2
 
 
 ## 开源许可
