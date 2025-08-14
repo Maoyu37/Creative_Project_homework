@@ -24,6 +24,8 @@
 
 ## Project4 SM3的软件实现与优化
 - MySM3.cpp给出了SM3杂凑算法的C++实现，经过[国家密码管理局给出的测试样例](https://oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf)验证无误
+- uint32.cpp给出了基于类型优化、循环展开等的优化版本，思路与SM4类似。
+- readme.md给出了一个长度扩展攻击思路，LengthAttendAttack1.cpp实现了其中关键步骤的代码
 
 
 ## 开源许可
