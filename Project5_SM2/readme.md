@@ -1,0 +1,14 @@
+## SM2的相关实现参数等细节讨论
+    本项目所实现的SM2椭圆曲线参数来自GM/T 0003.5-2012 规范中定义椭圆参数：
+    p  = FFFFFFFE FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 00000000 FFFFFFFF FFFFFFFF
+    a  = FFFFFFFE FFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFF 00000000 FFFFFFFF FFFFFFFC
+    b  = 28E9FA9E 9D9F5E34 4D5A9E4B CF6509A7 F39789F5 15AB8F92 DDBCBD41 4D940E93
+    n  = FFFFFFFE FFFFFFFF FFFFFFFF FFFFFFFF 7203DF6B 21C6052B 53BBF409 39D54123
+    Gx = 32C4AE2C 1F198119 5F990446 6A39C994 8FE30BBF F2660BE1 715A4589 334C74C7
+    Gy = BC3736A2 F4F6779C 59BDCEE3 6B692153 D0A9877C C62A4740 02DF32E5 2139F0A0
+    具体实现中采用的椭圆曲线算法库来自开源项目[ecc-pycrypto](https://github.com/lc6chang/ecc-pycrypto)，细节函数实现可以参照该项目的相关文档。
+    我在本项目中对该库中curve模块进行了二次开发，使其支持GM/T 0003.5-2012 规范中定义的SM2曲线的相关运算。
+
+## SM2的实现
+    - SM2POC.py给出的是一个在模素数乘法群上的模拟实现，用于给基于ECC的SM2实现提供参照。该算法没有安全性保障，且运行效率低，仅作参考用。
+    - ECC_SM2.py是正规的SM2算法实现，采用GM/T 0003.5-2012 规范中给出的椭圆曲线参数实现了一个ShortWeierstrassCurve。
