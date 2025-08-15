@@ -19,3 +19,5 @@ Project6_GooglePasswordCheckUp/
 
 ## 论文协议实现
 这一版本的实现完整重现了[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。不过虽然都基于DDH算法，但这一协议实际上与密码校验关系不大。从应用上看，这更像是上述协议的一个推广版本。
+### 实验结果
+![Paper_result.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project6_GooglePasswordCheckUp/Paper_result.png)
