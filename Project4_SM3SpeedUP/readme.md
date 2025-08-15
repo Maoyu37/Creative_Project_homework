@@ -3,6 +3,14 @@
 - MySM3.cpp为最基础的SM3算法，以字节为单位处理数据
 - uint32.cpp的优化思想是基于对SM3结构的观察：SM3算法以32bit为最小处理单位，那么可以利用uint32直接进行计算节约计算量，降低大量函数调用的栈开销。
 - 在此基础上，对最耗时间的消息扩展和压缩函数进行4次循环展开，减少分支预测失败和循环计数器开销
+### 性能测试结果
+- uint32Benchmark.cpp与MySM3Benchmark.cpp分别给出了上述两版代码的执行效率，运行结果如下图所示：
+| | |
+| :-: | :-: |
+| ![MySM3.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/MySM3.png) | ![uint32.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/uint32.png) |
+| 原始实现的运行截图 | unsigned int 32实现的性能截图 |
+| 7.051ms | 0.775ms |
+| 原始实现的轮耗时 | 新实现的轮耗时 |
 ## 长度拓展攻击
 ### 攻击模型描述
     攻击者只知道消息Input以及其哈希值Hash，通过以下方法，他可以在不直接向哈希寓言机询问Input2的前提下构造一个长度拓展的Hash伪造(Input2,Hash2)
