@@ -10,7 +10,7 @@ Project1_SM4SpeedUP/
 ### 实验结果
 | | | |
 | :-: | :-: | :-: |
-| ![Trivial.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/Trivial.png) | ![TTable.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/TTable.png) | ![TTable_SIMD.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/TTable_SIMD.png) |
+| ![Trivial.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/Trivial.png) | ![TTable.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/TTable.png) | ![TTable_SIMD.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/Ttable_SIMD.png) |
 | 原始实现的性能截图 | T-table实现的性能截图 | T-table-SIMD实现的性能截图 |
 | 4.96(6.32)MB/s | 35.61(36.85)MB/s | 39.74(40.46)MB/s |
 | 原始实现的吞吐量 | T-table实现的吞吐量 | T-table-SIMD实现的吞吐量 |
