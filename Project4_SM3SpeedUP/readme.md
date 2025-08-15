@@ -5,7 +5,7 @@
 - 在此基础上，对最耗时间的消息扩展和压缩函数进行4次循环展开，减少分支预测失败和循环计数器开销
 ### 性能测试结果
 - uint32Benchmark.cpp与MySM3Benchmark.cpp分别给出了上述两版代码的执行效率，运行结果如下图所示：
-| | |
+
 | :-: | :-: |
 | ![MySM3.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/MySM3.png) | ![uint32.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/uint32.png) |
 | 原始实现的运行截图 | unsigned int 32实现的性能截图 |
