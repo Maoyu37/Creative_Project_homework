@@ -2,7 +2,7 @@
 ## 代码构成
 ```
 Project6_GooglePasswordCheckUp/
-├── UserInfo.py.                    # 存储用户名-密码对用于校验代码准确性
+├── UserInfo.py                     # 存储用户名-密码对用于校验代码准确性
 ├── GooglePasswordCheckup.py        # 校验算法的POC
 ├── PaperImplementation.py          # 根据论文还原的实际实现算法
 └── readme.md                       # 本说明文档

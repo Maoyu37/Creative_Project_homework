@@ -6,7 +6,7 @@
 - TrivalSM4.cpp 文件包含了SM4的C++实现，以及一个简单的benchmark
 - TTableSM4.cpp 文件包含了上述实现的TTable加速版本，实现了约6倍性能提升
 - TTable_SIMD_SM4.cpp 文件利用smmintrin实现了SIMD向量化并行优化，进一步改善了性能
-- 实验截图见Project1文件夹
+- 实验截图见Project1文件夹,详细数据记录在[readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project1_SM4SpeedUP/readme.md)中。
 
 ## Project2 图片水印嵌入提取的算法优化
 该任务利用了开源脚本[BlindWatermark](https://github.com/fire-keeper/BlindWatermark)给出的基于离散小波变换的水印嵌入提取算法。
@@ -21,6 +21,8 @@
 - poseidon2.circom为本项目实现的Poseidon2电路
 - input.json为线路评估时的输入变量
 - test.py用于将开源Poseidon2实现的rust项目给出的大端序BIG_INT输出转换为十进制大整数
+- poseidon2.r1cs为用于零知识证明的约束文件
+- witness.wtns为见证者文件
 
 ## Project4 SM3的软件实现与优化
 - MySM3.cpp给出了SM3杂凑算法的C++实现，经过[国家密码管理局给出的测试样例](https://oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf)验证无误
@@ -35,6 +37,7 @@
     -- SM2_leaking_k_attack.py给出加密随机数k泄露时恢复私钥的攻击
     -- SM2_reuse_k_attack.py给出同一随机数被用于多次签名时恢复私钥的攻击
     -- 课件指出两个不同角色采用相同的随机数进行签名会将自己的私钥互相泄露出去，但这本质上就是SM2_leaking_k_attack.py实现的攻击，本项目不再展示
+- [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project5_SM2/readme.md)给出了具体代码结构及项目描述
 
 ## Project6 GooglePasswordCheckUp
 这个项目实现了一个类似Google Password Checkup的隐私保护协议，允许用户在不暴露实际密码的情况下，检查自己的用户名-密码对是否存在于服务器的数据库中。系统基于离散对数问题的学原理，确保用户隐私得到保护。
