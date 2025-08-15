@@ -4,7 +4,7 @@
 Project6_GooglePasswordCheckUp/
 ├── UserInfo.py.                    # 存储用户名-密码对用于校验代码准确性
 ├── GooglePasswordCheckup.py        # 校验算法的POC
-├── Realworld_Implementation.py     # 根据论文还原的实际实现算法
+├── PaperImplementation.py          # 根据论文还原的实际实现算法
 └── readme.md                       # 本说明文档
 ```
 ## POC实现
@@ -17,5 +17,5 @@ Project6_GooglePasswordCheckUp/
 ### 实验结果
 ![POC_result.png](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project6_GooglePasswordCheckUp/POC_result.png)
 
-## 完整协议实现
-这一版本的实现完整重现了[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议
+## 论文协议实现
+这一版本的实现完整重现了[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。不过虽然都基于DDH算法，但这一协议实际上与密码校验关系不大。从应用上看，这更像是上述协议的一个推广版本。

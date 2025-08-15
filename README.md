@@ -40,7 +40,7 @@
 这个项目实现了一个类似Google Password Checkup的隐私保护协议，允许用户在不暴露实际密码的情况下，检查自己的用户名-密码对是否存在于服务器的数据库中。系统基于离散对数问题的学原理，确保用户隐私得到保护。
 - UserInfo.py 保存了100个用户名-密码对用于测试协议是否运转正常
 - GooglePasswordCheckup.py 参考自PPT上的协议描述，实现了POC的用户查询机制。
-- Realworld_Implementation.py给出了参照[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。
+- PaperImplementation.py给出了参照[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。
 - [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project6_GooglePasswordCheckUp/readme.md)记录了算法数学原理，项目构成及实验结果
 
 ## 开源许可
