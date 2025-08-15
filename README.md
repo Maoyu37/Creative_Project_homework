@@ -1,6 +1,6 @@
 # 📌 2025创新作业实践课程作业展示
 
-**项目说明**：本项目包含了简单的作业课题介绍，代码简要说明及部分代码的运行展示。部分项目可能只展示代码及运行结果，需要用户自行进行本地部署适配等工作。
+**项目说明**：本项目包含了简单的作业课题介绍，代码简要说明及部分代码的运行展示。部分(特别指c++源码编写的)项目可能只展示代码及运行结果，需要用户自行进行本地部署等工作。
 
 ## Project1 SM4的代码实现及加速尝试
 - TrivalSM4.cpp 文件包含了SM4的C++实现，以及一个简单的benchmark
@@ -55,7 +55,25 @@
 
 ### [BlindWatermark](https://github.com/fire-keeper/BlindWatermark)
 - **作者**: [fire-keeper](https://github.com/fire-keeper)
-- **许可证**: [GPL-3.0 license](https://github.com/fire-keeper/BlindWatermark/blob/master/LICENSE))
+- **许可证**: [GPL-3.0 license](https://github.com/fire-keeper/BlindWatermark/blob/master/LICENSE)
 - **用途**: 作为Project2的基础进行二次开发
 
+### [circom2](https://github.com/iden3/circom)
+- **作者**: [iden3](https://github.com/iden3)
+- **许可证**: [GPL-3.0 license](https://github.com/iden3/circom?tab=GPL-3.0-1-ov-file)
+- **用途**: 提供零知识证明电路的语法与编译平台支持，用于生成相关约束文件及witness
 
+### [poseidon2](https://github.com/HorizenLabs/poseidon2/tree/main)
+- **作者**: [HorizenLabs](https://github.com/HorizenLabs)
+- **许可证**: [Apache License 2.0](https://github.com/HorizenLabs/poseidon2/blob/main/LICENSE-APACHE), [MIT license](https://github.com/HorizenLabs/poseidon2/blob/main/LICENSE-MIT)
+- **用途**: 作为Poseidon2算法的rust开源实现，我们在Project3的电路借鉴了其代码思路，且用这一开源算法评估了若干标准输入输出是否正确
+
+### [ecc-pycrypto](https://github.com/lc6chang/ecc-pycrypto)
+- **作者**: [lc6chang](https://github.com/lc6chang)
+- **许可证**: [MIT license](https://github.com/lc6chang/ecc-pycrypto?tab=MIT-1-ov-file#readme)
+- **用途**: 作为Project5中SM2的底层椭圆曲线算法库，实现了SM2签名算法的数学基础组件
+
+### [python-paillier](https://github.com/data61/python-paillier)
+- **作者**: [data61](https://github.com/data61)
+- **许可证**: [GPL-3.0 license](https://github.com/data61/python-paillier/blob/master/LICENSE.txt)
+- **用途**: 用于实现Project6中的安全交集协议，提供python上的Paillier加法同态加密支持
