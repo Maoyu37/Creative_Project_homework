@@ -28,20 +28,20 @@
 - [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project4_SM3SpeedUP/readme.md)给出了一个长度扩展攻击思路，LengthAttendAttack1.cpp实现了其中关键步骤的代码
 
 ## Project5 SM2
-    实现中采用的椭圆曲线算法库来自开源项目[ecc-pycrypto](https://github.com/lc6chang/ecc-pycrypto)
-    - 对该库中curve模块进行了二次开发，使其支持GM/T 0003.5-2012 规范中定义的SM2曲线的相关运算
-    - 基于上述修改结果实现了SM2的签名验签算法ECC_SM2.py
-    - 在ECC_SM2.py及课件的基础上实现了若干签名算法的误用攻击
-        -- SM2_leaking_k_attack.py给出加密随机数k泄露时恢复私钥的攻击
-        -- SM2_reuse_k_attack.py给出同一随机数被用于多次签名时恢复私钥的攻击
-        -- 课件指出两个不同角色采用相同的随机数进行签名会将自己的私钥互相泄露出去，但这本质上就是SM2_leaking_k_attack.py实现的攻击，本项目不再展示
+实现中采用的椭圆曲线算法库来自开源项目[ecc-pycrypto](https://github.com/lc6chang/ecc-pycrypto)
+- 对该库中curve模块进行了二次开发，使其支持GM/T 0003.5-2012 规范中定义的SM2曲线的相关运算
+- 基于上述修改结果实现了SM2的签名验签算法ECC_SM2.py
+- 在ECC_SM2.py及课件的基础上实现了若干签名算法的误用攻击
+    -- SM2_leaking_k_attack.py给出加密随机数k泄露时恢复私钥的攻击
+    -- SM2_reuse_k_attack.py给出同一随机数被用于多次签名时恢复私钥的攻击
+    -- 课件指出两个不同角色采用相同的随机数进行签名会将自己的私钥互相泄露出去，但这本质上就是SM2_leaking_k_attack.py实现的攻击，本项目不再展示
 
 ## Project6 GooglePasswordCheckUp
-    这个项目实现了一个类似Google Password Checkup的隐私保护协议，允许用户在不暴露实际密码的情况下，检查自己的用户名-密码对是否存在于服务器的数据库中。系统基于离散对数问题的数学原理，确保用户隐私得到保护。
-    - UserInfo.py 保存了100个用户名-密码对用于测试协议是否运转正常
-    - GooglePasswordCheckup.py 参考自PPT上的协议描述，实现了POC的用户查询机制。
-    - Realworld_Implementation.py给出了参照[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。
-    - [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project6_GooglePasswordCheckUp/readme.md)记录了算法数学原理，项目构成及实验结果
+这个项目实现了一个类似Google Password Checkup的隐私保护协议，允许用户在不暴露实际密码的情况下，检查自己的用户名-密码对是否存在于服务器的数据库中。系统基于离散对数问题的学原理，确保用户隐私得到保护。
+- UserInfo.py 保存了100个用户名-密码对用于测试协议是否运转正常
+- GooglePasswordCheckup.py 参考自PPT上的协议描述，实现了POC的用户查询机制。
+- Realworld_Implementation.py给出了参照[谷歌团队的论文](https://eprint.iacr.org/2019/723.pdf)中section 3.1一节Figure 2中展示的协议。
+- [readme.md](https://github.com/Maoyu37/Creative_Project_homework/blob/main/Project6_GooglePasswordCheckUp/readme.md)记录了算法数学原理，项目构成及实验结果
 
 ## 开源许可
 由于部分代码继承自其他项目，本项目采用GPL-3.0 license
